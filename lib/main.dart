@@ -47,22 +47,22 @@ class _HomePageState extends State<HomePage> {
   List<WordleGuess> guesses = [];
   String typedGuess = "";
   Map<String, WordleColor> keyColorMap = {};
-  List<String> answers = [];
-  List<String> guessables = [];
+  Set<String> answers = {};
+  Set<String> guessables = {};
   Future<void>? loadAssetsFuture;
   String errorText = "";
 
   // The main algorithm for deciding how to color the guess
   EvilResult getResult(
-    List<String> answers,
+    Set<String> answers,
     String guessText,
     Map<String, WordleColor> keyColorMap,
   ) {
     // Sort based on color sequence
-    Map<WordleGuess, List<String>> guessMap = {};
+    Map<WordleGuess, Set<String>> guessMap = {};
     for (String answerText in answers) {
       WordleGuess guess = WordleGuess.fromGuess(guessText, answerText);
-      guessMap.putIfAbsent(guess, () => []).add(answerText);
+      guessMap.putIfAbsent(guess, () => {}).add(answerText);
     }
 
     // Pick the largest group of words
@@ -195,11 +195,11 @@ class _HomePageState extends State<HomePage> {
     final answersFileContent = await rootBundle.loadString(
       'assets/answers.txt',
     );
-    answers = answersFileContent.split("\n");
+    answers = answersFileContent.split("\n").toSet();
     final guessablesFileContent = await rootBundle.loadString(
       'assets/guessables.txt',
     );
-    guessables = guessablesFileContent.split("\n");
+    guessables = guessablesFileContent.split("\n").toSet();
   }
 
   Future<void> refreshGame() async {
@@ -227,7 +227,7 @@ class _HomePageState extends State<HomePage> {
       showMessage(context, "You Win");
       hasWon = true;
     } else if (round == 6) {
-      loseDialog.show(context, result.answers);
+      loseDialog.show(context, result.answers.toList());
     }
 
     setState(() {
@@ -245,7 +245,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     if (round > 6 && !hasWon) {
-      loseDialog.show(context, answers);
+      loseDialog.show(context, answers.toList());
     }
   }
 

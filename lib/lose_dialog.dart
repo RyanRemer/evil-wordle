@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 class LoseDialog {
   bool showingLoseDialog = false;
   Future<void> show(BuildContext context, List<String> answers) async {
+    answers.sort();
+
     if (showingLoseDialog) return;
     showingLoseDialog = true;
     await showDialog(

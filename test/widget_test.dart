@@ -5,26 +5,50 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:flutter/material.dart';
+import 'package:evil_wordle/model/wordle_color.dart';
+import 'package:evil_wordle/model/wordle_guess.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:evil_wordle/main.dart';
-
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  test('Double letter coloring is correct: bully vs loops', () {
+    WordleGuess guess = WordleGuess.fromGuess("bully", "loops");
+    expect(
+        WordleGuess("bully", [
+              WordleColor.absent,
+              WordleColor.absent,
+              WordleColor.present,
+              WordleColor.absent,
+              WordleColor.absent,
+            ]) ==
+            guess,
+        isTrue);
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  test('Double letter coloring is correct: vally vs value', () {
+    WordleGuess guess = WordleGuess.fromGuess("vally", "value");
+    expect(
+        WordleGuess("vally", [
+              WordleColor.correct,
+              WordleColor.correct,
+              WordleColor.correct,
+              WordleColor.absent,
+              WordleColor.absent,
+            ]) ==
+            guess,
+        isTrue);
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  test('Double letter coloring is correct: puppy vs xppxy', () {
+    WordleGuess guess = WordleGuess.fromGuess("puppy", "xppxx");
+    expect(
+        WordleGuess("puppy", [
+              WordleColor.present,
+              WordleColor.absent,
+              WordleColor.correct,
+              WordleColor.absent,
+              WordleColor.absent,
+            ]) ==
+            guess,
+        isTrue);
   });
 }

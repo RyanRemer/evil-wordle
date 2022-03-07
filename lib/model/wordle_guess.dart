@@ -19,19 +19,22 @@ class WordleGuess {
 
     int wordLength = guessText.length;
     List<WordleColor> colors = List.filled(wordLength, WordleColor.absent);
+    List<bool> isMarked = List.filled(wordLength, false); //for double letter case
 
     // determine correct letters
     for (int i = 0; i < wordLength; i++) {
       if (guessCharacters[i] == answerCharacters[i]) {
         colors[i] = WordleColor.correct;
+        isMarked[i] = true;
       }
     }   
 
     // determine present letters (beware double letter use case)
     for (int i = 0; i < guessCharacters.length; i++) {
       for (int j = 0; j < answerCharacters.length; j++) {
-        if (guessCharacters[i] == answerCharacters[j] && colors[i] == WordleColor.absent) {
+        if (guessCharacters[i] == answerCharacters[j] && !isMarked[j]) {
           colors[i] = WordleColor.present;
+          isMarked[j] = true;
         }
       }
     }
